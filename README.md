@@ -116,7 +116,7 @@ import logging
 logging.basicConfig(stream=sys.stderr)
 sys.path.insert(0,"catalog-app/Item-Catalog-Application-Project")
 
-from FlaskApp import app as application
+from Item-Catalog-Application-Project import app as application
 application.secret_key = 'Added client secret key from Google API '
 
 Restart Apache:
