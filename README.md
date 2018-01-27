@@ -19,7 +19,7 @@ $ chmod 644 .ssh/authorized_keys
 
 8.	Use sudo vim /etc/ssh/sshd_config and then change Port 22 to Port 2200
 9.	Made firewall rule in Google instance to allow TCP:2200; TCP:80 ; UDP:123
-10.	 Now can use ssh to login with the grader user: ssh grader@130.211.184.179 -p 2200 -i ~/.ssh/linuxCourse
+10.	Now can use ssh to login with the grader user: ssh grader@130.211.184.179 -p 2200 -i ~/.ssh/linuxCourse
 
 Forcing Key Based Authentication:-
 Changed the following line in the file /etc/ssh/sshd_config:
@@ -69,29 +69,37 @@ exit
 Install git, clone and setup my Item Catalog project:
 
 1.	Git was already installed.
-2.	Created directory mkdir catalog-app
-3.	cd catalog-app
-4.	Clone the Catalog App to the virtual machine git clone https://github.com/contactavishek/Item-Catalog-Application-Project.git
-5.	Moved into Item-Catalog-Application-Project and edited database_setup.py, lotsofmenus.py and projectlogin.py files with engine = create_engine(‘postgresql://catalog:udacity@localhost/catalog’)
-6.	Install pip sudo apt-get install python-pip
-7.	Install psycopg2 sudo apt-get -qqy install postgresql python-psycopg2
+2.	Use cd /var/www to move to the /var/www directory
+3.	Created the application directory sudo mkdir FlaskApp
+4.	Moved inside this directory using cd FlaskApp
+5.	Created another directory mkdir FlaskApp
+6.	Moved inside the inner FlaskApp directory using cd FlaskApp
+7.	Clone the Item Catalog App to the virtual machine sudo git clone https://github.com/contactavishek/Item-Catalog-Application-Project.git
+8.	Renamed the project's name sudo mv ./Item-Catalog-Application-Project ./FlaskApp
+9.	Moved to the innermost FlaskApp directory using cd FlaskApp and edited database_setup.py, lotsofmenus.py and projectlogin.py files with engine = create_engine('postgresql://catalog:udacity@localhost/catalog')
+10.	Install pip sudo apt-get install python-pip
+11.	Install psycopg2 sudo apt-get -qqy install postgresql python-psycopg2
+
+Update the Google OAuth client secrets file:
+
+In the client_secrets.json file, added the IP address(130.211.184.179) in the javascript_origins field. Also added this IP address into the Google Developers Console -> API Manager -> Credentials, in the web client under "Authorized JavaScript origins"
 
 Configure and Enable a New Virtual Host:
 
-Create catalog-app.conf to edit: sudo nano /etc/apache2/sites-available/catalog-app.conf
+Create Flaskapp.conf to edit: sudo nano /etc/apache2/sites-available/Flaskapp.conf
 
 Add the following lines of code to the file to configure the virtual host:
 
 <VirtualHost *:80>
 	ServerName 130.211.184.179
 	ServerAdmin contactavishek239@gmail.com
-	WSGIScriptAlias / /catalog-app/Item-Catalog-Application-Project/catalog-app.wsgi
-	<Directory /catalog-app/Item-Catalog-Application-Project/>
+	WSGIScriptAlias / /var/www/Flaskapp/FlaskApp/flaskapp.wsgi
+	<Directory /var/www/FlaskApp/FlaskApp/FlaskApp/>
 		Order allow,deny
 		Allow from all
 	</Directory>
-	Alias /static /catalog-app/Item-Catalog-Application-Project/static
-	<Directory /catalog-app/Item-Catalog-Application-Project/static/>
+	Alias /static /var/www/FlaskApp/FlaskApp/FlaskApp/static
+	<Directory /var/www/FlaskApp/FlaskApp/FlaskApp/static/>
 		Order allow,deny
 		Allow from all
 	</Directory>
@@ -100,27 +108,27 @@ Add the following lines of code to the file to configure the virtual host:
 	CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 
-Enable the virtual host with the following command: sudo a2ensite catalog-app.conf
+Enable the virtual host with the following command: sudo a2ensite Flaskapp.conf
 
 Create the .wsgi File
 
-1.	Create the .wsgi File under /catalog-app/Item-Catalog-Application-Project
+1.	Create the .wsgi File under /var/www/FlaskApp/FlaskApp
 
-cd catalog-app/Item-Catalog-Application-Project
-sudo nano catalog-app.wsgi
+cd cd /var/www/FlaskApp/FlaskApp
+sudo nano flaskapp.wsgi
 
-2.	Add the following lines of code to the catalog-app.wsgi file:
+2.	Add the following lines of code to the flaskapp.wsgi file:
 #!/usr/bin/python
 import sys
 import logging
 logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0,"catalog-app/Item-Catalog-Application-Project")
+sys.path.insert(0,"/var/www/FlaskApp/FlaskApp")
 
-from Item-Catalog-Application-Project import app as application
+from FlaskAapp import app as application
 application.secret_key = 'Added client secret key from Google API '
 
 Restart Apache:
-1.	Restart Apache sudo service apache2 restart
+1.	sudo service apache2 restart
 
 References:
 https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps
