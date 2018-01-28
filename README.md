@@ -76,13 +76,22 @@ Install git, clone and setup my Item Catalog project:
 6.	Moved inside the inner FlaskApp directory using cd FlaskApp
 7.	Clone the Item Catalog App to the virtual machine sudo git clone https://github.com/contactavishek/Item-Catalog-Application-Project.git
 8.	Renamed the project's name sudo mv ./Item-Catalog-Application-Project ./FlaskApp
-9.	Moved to the innermost FlaskApp directory using cd FlaskApp and edited database_setup.py, lotsofmenus.py and projectlogin.py files with engine = create_engine('postgresql://catalog:udacity@localhost/catalog')
+9.	Moved to the innermost FlaskApp directory using cd FlaskApp
+        Renamed projectlogin.py to __init__.py and edited database_setup.py, lotsofmenus.py and __init__.py files with engine = create_engine('postgresql://catalog:udacity@localhost/catalog')
+        Created database schema: sudo python database_setup.py
+	Added menu items to database : sudo python lotsofmenus.py
 10.	Install pip sudo apt-get install python-pip
 11.	Install psycopg2 sudo apt-get -qqy install postgresql python-psycopg2
 
 Update the Google OAuth client secrets file:
 
 In the client_secrets.json file, added the IP address(130.211.184.179) in the javascript_origins field. Also added this IP address into the Google Developers Console -> API Manager -> Credentials, in the web client under "Authorized JavaScript origins"
+
+Added the absolute path in __init__.py file by:
+
+import os
+path = os.path.dirname(__file__)
+CLIENT_ID = json.loads(open(path+'/client_secrets.json', 'r').read())['web']['client_id']
 
 Configure and Enable a New Virtual Host:
 
